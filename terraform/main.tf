@@ -1,23 +1,25 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 6.0"
-    }
-  }
+# ---------------------------------------
+# VPC Module
+# ---------------------------------------
 
-  required_version = ">= 1.5.0"
+module "vpc" {
+  source = "./modules/vpc"
+
+  vpc_name            = var.vpc_name
+  vpc_cidr            = var.vpc_cidr
+  public_subnet_cidr  = var.public_subnet_cidr
+  private_subnet_cidr = var.private_subnet_cidr
+  availability_zone   = var.availability_zone
 }
 
-provider "aws" {
-  region = "ap-south-1"
-}
+# ---------------------------------------
+# EC2 Module
+# ---------------------------------------
 
-resource "aws_instance" "web" {
-  ami           = "ami-00d2dbb426772b03a" # Amazon Linux 2023 (example for us-east-1)
-  instance_type = "t2.micro"
+module "ec2" {
+  source = "./modules/ec2"
 
-  tags = {
-    Name = "terraform-ec2"
-  }
+  ami_id        = var.ami_id
+  instance_type = var.instance_type
+  instance_name = var.instance_name
 }
